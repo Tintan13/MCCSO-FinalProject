@@ -1,0 +1,381 @@
+<!-- Personnel ejs -->
+<%- include('includes/header') %>
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Personnel Information</h1>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="input-group">
+                <input type="text" class="form-control" id="searchInput" placeholder="Search personnel..." aria-label="Search">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPersonnelModal">Add New Personnel</a>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr class="text-center">
+                                    <th>Personnel ID</th>
+                                    <th>Personnel Name</th>
+                                    <th>Personnel Department</th>
+                                    <th>Personnel Position</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% personnel.forEach(person => { %>
+                                    <tr id="personnel-<%= person.personnel_id %>">
+                                        <td><%= person.personnel_id %></td>
+                                        <td><%= person.personnel_name %></td>
+                                        <td><%= person.department_name %></td>
+                                        <td><%= person.position %></td>
+                                        <td class="text-center">
+                                            <button class="btn btn-success btn-sm update-btn"
+                                                    data-id="<%= person.personnel_id %>"
+                                                    data-name="<%= person.personnel_name %>"
+                                                    data-department="<%= person.department_id %>"
+                                                    data-position="<%= person.position %>"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#updatePersonnelModal">
+                                                Update
+                                            </button>
+                                            <button class="btn btn-danger btn-sm delete-btn"
+                                                    data-id="<%= person.personnel_id %>">
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+
+
+                        <!-- Pagination in  table -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <% if (pagination.totalPages > 1) { %>
+                                        <nav aria-label="Page navigation">
+                                            <ul class="pagination justify-content-center">
+                                                <!-- Previous button -->
+                                                <li class="page-item <%= !pagination.hasPrev ? 'disabled' : '' %>">
+                                                    <a class="page-link" href="?page=<%= pagination.page - 1 %>" <%= !pagination.hasPrev ? 'tabindex="-1" aria-disabled="true"' : '' %>>
+                                                        Previous
+                                                    </a>
+                                                </li>
+
+                                                <!-- Page numbers -->
+                                                <% for(let i = 1; i <= pagination.totalPages; i++) { %>
+                                                    <li class="page-item <%= pagination.page === i ? 'active' : '' %>">
+                                                        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                                                    </li>
+                                                <% } %>
+
+                                                <!-- Next button -->
+                                                <li class="page-item <%= !pagination.hasNext ? 'disabled' : '' %>">
+                                                    <a class="page-link" href="?page=<%= pagination.page + 1 %>" <%= !pagination.hasNext ? 'tabindex="-1" aria-disabled="true"' : '' %>>
+                                                        Next
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    <% } %>
+                                    
+                                    <!-- Records info -->
+                                    <div class="text-center mt-2">
+                                        <small class="text-muted">
+                                            Showing <%= ((pagination.page - 1) * 10) + 1 %> to 
+                                            <%= Math.min(pagination.page * 10, pagination.totalRecords) %> 
+                                            of <%= pagination.totalRecords %> records
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Personnel Modal -->
+<div class="modal fade" id="addPersonnelModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Personnel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addPersonnelForm">
+                    <input type="hidden" id="id" name="id">
+                    <div class="mb-3">
+                        <label for="personnel_id" class="form-label">Personnel ID</label>
+                        <input type="text" class="form-control" id="personnel_id" name="personnel_id" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="personnel_name" class="form-label">Personnel Name</label>
+                        <input type="text" class="form-control" id="personnel_name" name="personnel_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="department_id" class="form-label">Department</label>
+                        <select class="form-control" id="department_id" name="department_id">
+                            <option value="">Select Department</option>
+                            <% departments.forEach(dept => { %>
+                                <option value="<%= dept.department_id %>"><%= dept.department_name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="position" class="form-label">Position</label>
+                        <input type="text" class="form-control" id="position" name="position">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="savePersonnelBtn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Personnel Modal -->
+<div class="modal fade" id="updatePersonnelModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Personnel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updatePersonnelForm">
+                    <input type="hidden" id="update_personnel_id">
+                    <div class="mb-3">
+                        <label for="update_personnel_name" class="form-label">Personnel Name</label>
+                        <input type="text" class="form-control" id="update_personnel_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_department_id" class="form-label">Department</label>
+                        <select class="form-control" id="update_department_id" required>
+                            <% departments.forEach(dept => { %>
+                                <option value="<%= dept.department_id %>"><%= dept.department_name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_position" class="form-label">Position</label>
+                        <input type="text" class="form-control" id="update_position" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="updatePersonnelBtn">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    
+// Real-time search  function
+const searchInput = document.querySelector('#searchInput');
+searchInput.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const tableRows = document.querySelectorAll('tbody tr');
+    let visibleCount = 0;
+
+    tableRows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const shouldShow = text.includes(searchTerm);
+        row.style.display = shouldShow ? '' : 'none';
+        if (shouldShow) visibleCount++;
+    });
+
+    // Update the records info text when searching
+    const recordsInfo = document.querySelector('.text-muted');
+    if (recordsInfo) {
+        if (searchTerm) {
+            recordsInfo.textContent = `Showing ${visibleCount} matching records`;
+        } else {
+            // Reset to original pagination text
+            const start = ((pagination.page - 1) * 10) + 1;
+            const end = Math.min(pagination.page * 10, pagination.totalRecords);
+            recordsInfo.textContent = `Showing ${start} to ${end} of ${pagination.totalRecords} records`;
+        }
+    }
+
+    // Hide pagination when searching
+    const paginationNav = document.querySelector('.pagination');
+    if (paginationNav) {
+        paginationNav.style.display = searchTerm ? 'none' : '';
+    }
+});
+
+
+
+
+document.getElementById('savePersonnelBtn').addEventListener('click', function() {
+    const personnelId = document.getElementById('personnel_id').value.trim();
+    const personnelName = document.getElementById('personnel_name').value.trim();
+    const departmentId = document.getElementById('department_id').value;
+    const position = document.getElementById('position').value.trim();
+
+    // Debug log
+    console.log('Submitting data:', {
+        personnel_id: personnelId,
+        personnel_name: personnelName,
+        department_id: departmentId,
+        position: position
+    });
+
+    if (!personnelId || !personnelName) {
+        alert('Personnel ID and Name are required!');
+        return;
+    }
+
+    fetch('/personnel/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            personnel_id: personnelId,
+            personnel_name: personnelName,
+            department_id: departmentId || null,
+            position: position || ''
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Server response:', data);
+        
+        if (data.success) {
+            alert('Personnel added successfully!');
+            location.reload();
+        } else {
+            alert(data.error || 'Failed to add personnel');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while adding personnel. Check console for details.');
+    });
+});
+
+
+
+// Update Personnel
+document.addEventListener('DOMContentLoaded', function() {
+    // Event delegation for update buttons
+    document.body.addEventListener('click', function(e) {
+        if (e.target.classList.contains('update-btn')) {
+            const id = e.target.getAttribute('data-id');
+            const name = e.target.getAttribute('data-name');
+            const department = e.target.getAttribute('data-department');
+            const position = e.target.getAttribute('data-position');
+
+            // Set values in update modal
+            document.getElementById('update_personnel_id').value = id;
+            document.getElementById('update_personnel_name').value = name;
+            document.getElementById('update_department_id').value = department;
+            document.getElementById('update_position').value = position;
+        }
+    });
+
+    // Update button click handler
+    document.getElementById('updatePersonnelBtn').addEventListener('click', function() {
+        const id = document.getElementById('update_personnel_id').value;
+        const name = document.getElementById('update_personnel_name').value.trim();
+        const department = document.getElementById('update_department_id').value;
+        const position = document.getElementById('update_position').value.trim();
+
+        if (!name) {
+            alert('Personnel Name is required!');
+            return;
+        }
+
+        fetch(`/personnel/update/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                personnel_name: name,
+                department_id: department,
+                position: position
+            }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Personnel updated successfully!');
+                location.reload();
+            } else {
+                alert(data.error || 'Failed to update personnel');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while updating personnel');
+        });
+    });
+
+    // Delete button click handler
+    document.body.addEventListener('click', function(e) {
+        if (e.target.classList.contains('delete-btn')) {
+            e.preventDefault();
+            const id = e.target.getAttribute('data-id');
+            
+            if (confirm('Are you sure you want to delete this personnel?')) {
+                fetch(`/personnel/delete/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const row = document.querySelector(`#personnel-${id}`);
+                        if (row) {
+                            row.remove();
+                            alert('Personnel deleted successfully!');
+                        }
+                    } else {
+                        alert(data.error || 'Failed to delete personnel');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting personnel');
+                });
+            }
+        }
+    });
+});
+</script>
+
+<%- include('includes/footer') %>
+<%- include('includes/scripts') %>

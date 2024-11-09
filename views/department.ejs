@@ -1,0 +1,244 @@
+<%- include('includes/header') %>
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Department</h1>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search departments..." 
+                       aria-label="Search" style="border: 1px solid black; border-radius: 0.25rem;">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4" style="border: 1px solid black; border-radius: 0.25rem;">
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">Add New Department</a>
+                        </div>
+                    </div>
+                    <div class="table-responsive" style="border: 1px solid black; border-radius: 0.25rem;">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr class="text-center">
+                                    <th>Department Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% departments.forEach(department => { %>
+                                    <tr id="department-<%= department.department_id %>">
+                                        <td><%= department.department_name %></td>
+                                        <td class="text-center">
+                                            <button class="btn btn-success btn-sm update-btn" 
+                                                    data-id="<%= department.department_id %>"
+                                                    data-name="<%= department.department_name %>"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#updateDepartmentModal">
+                                                Update
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+
+                        <!-- Pagination in table -->
+                        <div class="row">
+                            <div class="col-12">
+                                <% if (pagination.totalPages > 1) { %>
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination justify-content-center">
+                                            <li class="page-item <%= !pagination.hasPrev ? 'disabled' : '' %>">
+                                                <a class="page-link" href="?page=<%= pagination.page - 1 %>" <%= !pagination.hasPrev ? 'tabindex="-1" aria-disabled="true"' : '' %>>
+                                                    Previous
+                                                </a>
+                                            </li>
+                                            <% for(let i = 1; i <= pagination.totalPages; i++) { %>
+                                                <li class="page-item <%= pagination.page === i ? 'active' : '' %>">
+                                                    <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                                                </li>
+                                            <% } %>
+                                            <li class="page-item <%= !pagination.hasNext ? 'disabled' : '' %>">
+                                                <a class="page-link" href="?page=<%= pagination.page + 1 %>" <%= !pagination.hasNext ? 'tabindex="-1" aria-disabled="true"' : '' %>>
+                                                    Next
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                <% } %>
+                                <div class="text-center mt-2">
+                                    <small class="text-muted">
+                                        Showing <%= ((pagination.page - 1) * 10) + 1 %> to 
+                                        <%= Math.min(pagination.page * 10, pagination.totalRecords) %> 
+                                        of <%= pagination.totalRecords %> records
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Adding Department -->
+<div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="addDepartmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addDepartmentModalLabel">Add New Department</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addDepartmentForm">
+                    <div class="mb-3">
+                        <label for="department_name" class="form-label">Department Name</label>
+                        <input type="text" class="form-control" id="department_name" name="department_name" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="saveDepartmentBtn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Updating Department -->
+<div class="modal fade" id="updateDepartmentModal" tabindex="-1" aria-labelledby="updateDepartmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateDepartmentModalLabel">Update Department</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateDepartmentForm">
+                    <input type="hidden" id="update_department_id" name="department_id">
+                    <div class="mb-3">
+                        <label for="update_department_name" class="form-label">Department Name</label>
+                        <input type="text" class="form-control" id="update_department_name" name="department_name" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="updateDepartmentBtn">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Get the search input element
+const searchInput = document.querySelector('input[aria-label="Search"]');
+const paginationContainer = document.querySelector('nav[aria-label="Page navigation"]');
+const recordsInfo = document.querySelector('.text-muted');
+
+// Add event listener for real-time search
+searchInput.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    
+    if (searchTerm) {
+        paginationContainer.style.display = 'none';
+        recordsInfo.style.display = 'none';
+    } else {
+        paginationContainer.style.display = 'block';
+        recordsInfo.style.display = 'block';
+    }
+
+    const tableRows = document.querySelectorAll('tbody tr');
+    tableRows.forEach(row => {
+        const departmentName = row.querySelector('td:first-child').textContent.toLowerCase();
+        row.style.display = departmentName.includes(searchTerm) ? '' : 'none';
+    });
+});
+
+// Add Department
+document.getElementById('saveDepartmentBtn').addEventListener('click', function() {
+    const form = document.getElementById('addDepartmentForm');
+    const departmentName = document.getElementById('department_name').value.trim();
+
+    if (!departmentName) return;
+
+    fetch('/department/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ department_name: departmentName }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const newDepartmentRow = `
+                <tr id="department-${data.department.department_id}">
+                    <td>${data.department.department_name}</td>
+                    <td class="text-center">
+                        <button class="btn btn-success btn-sm update-btn" 
+                                data-id="${data.department.department_id}"
+                                data-name="${data.department.department_name}"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#updateDepartmentModal">
+                            Update
+                        </button>
+                    </td>
+                </tr>
+            `;
+            document.querySelector('tbody').insertAdjacentHTML('beforeend', newDepartmentRow);
+            form.reset();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addDepartmentModal'));
+            modal.hide();
+        } else {
+            // Handle error (e.g., alert(data.error))
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+
+// Update Department
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('update-btn')) {
+        const id = e.target.dataset.id;
+        const name = e.target.dataset.name;
+        document.getElementById('update_department_id').value = id;
+        document.getElementById('update_department_name').value = name;
+    }
+});
+
+document.getElementById('updateDepartmentBtn').addEventListener('click', function() {
+    const id = document.getElementById('update_department_id').value;
+    const name = document.getElementById('update_department_name').value;
+
+    fetch(`/department/update/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ department_name: name }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const row = document.querySelector(`#department-${id} td:first-child`);
+            row.textContent = name;
+            $('#updateDepartmentModal').modal('hide');
+        } else {
+            // Handle error (e.g., alert(data.error))
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+</script>
+
+<%- include('includes/footer') %>
+<%- include('includes/scripts') %>

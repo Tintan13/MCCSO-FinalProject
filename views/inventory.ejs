@@ -1,0 +1,334 @@
+<%- include('includes/header') %>
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Inventory</h1>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search..." 
+                       aria-label="Search" style="border: 1px solid black; border-radius: 0.25rem;">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4" style="border: 1px solid black; border-radius: 0.25rem;">
+                <div class="card-body">
+                    <div class="row mb-3 align-items-center">
+                        <div class="col-3">
+                            <a href="#" class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#addEquipmentModal">Add New Equipment</a>
+                        </div>
+                        <div class="col-3">
+                            <a href="#" class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</a>
+                        </div>
+                        <div class="col-3">
+                            <select class="form-select" aria-label="Sort By" id="sortBySelect">
+                                <option selected disabled>Sort By</option>
+                                <option value="name">Name</option>
+                                <option value="date">Date Added</option>
+                                <option value="category">Category</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive" style="border: 1px solid black; border-radius: 0.25rem;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Serial No.</th>
+                                    <th>Model</th>
+                                    <th>Brand</th>
+                                    <th>Amount</th>
+                                    <th>Purchase Date</th>
+                                    <th>Category</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% inventory.forEach((item) => { %>
+                                    <tr>
+                                        <td><%= item.id %></td>
+                                        <td><%= item.name %></td>
+                                        <td><%= item.serial_no %></td>
+                                        <td><%= item.model %></td>
+                                        <td><%= item.brand %></td>
+                                        <td><%= item.amount %></td>
+                                        <td><%= item.purchase_date %></td>
+                                        <td><%= item.category_name %></td>
+                                        <td class="text-center">
+                                            <button class="btn btn-success btn-sm update-btn" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#updateEquipmentModal" 
+                                                    data-id="<%= item.id %>"
+                                                    data-name="<%= item.name %>"
+                                                    data-serial="<%= item.serial_no %>"
+                                                    data-model="<%= item.model %>"
+                                                    data-brand="<%= item.brand %>"
+                                                    data-amount="<%= item.amount %>"
+                                                    data-date="<%= item.purchase_date %>"
+                                                    data-category="<%= item.category_name %>">
+                                                Update
+                                            </button>
+                                            <button class="btn btn-danger btn-sm delete-btn" data-id="<%= item.id %>">Delete</button>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                            
+                        </table>
+
+                        <!-- Pagination in table -->
+                        <div class="row">
+                            <div class="col-12">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-center">
+                                        <!-- Previous button -->
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                                Previous
+                                            </a>
+                                        </li>
+
+                                        <!-- Page numbers -->
+                                        <li class="page-item active">
+                                            <a class="page-link" href="#">1</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="#">2</a>
+                                        </li>
+
+                                        <!-- Next button -->
+                                        <li class="page-item">
+                                            <a class="page-link" href="#">
+                                                Next
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+
+                                <!-- Records info -->
+                                <div class="text-center mt-2">
+                                    <small class="text-muted">
+                                        Showing 1 to 10 of 20 records
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Equipment Modal -->
+<div class="modal fade" id="addEquipmentModal" tabindex="-1" aria-labelledby="addEquipmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addEquipmentModalLabel">Add New Equipment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addEquipmentForm" action="/inventory/add" method="POST">
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="" disabled selected>Select a category</option>
+                            <% categories.forEach((category) => { %>
+                                <option value="<%= category.category_name %>">
+                                    <%= category.category_name %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="item_name" class="form-label">Item Name</label>
+                        <input type="text" class="form-control" id="item_name" name="item_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="serial_name" class="form-label">Serial Number</label>
+                        <input type="text" class="form-control" id="serial_name" name="serial_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="model" class="form-label">Model</label>
+                        <input type="text" class="form-control" id="model" name="model" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="brand" class="form-label">Brand</label>
+                        <input type="text" class="form-control" id="brand" name="brand" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount</label>
+                        <input type="number" class="form-control" id="amount" name="amount" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="purchase_date" class="form-label">Purchase Date</label>
+                        <input type="date" class="form-control" id="purchase_date" name="purchase_date" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="addEquipmentForm" class="btn btn-success">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Update Equipment Modal -->
+<div class="modal fade" id="updateEquipmentModal" tabindex="-1" aria-labelledby="updateEquipmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateEquipmentModalLabel">Update Equipment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateEquipmentForm" method="POST">
+                    <div class="mb-3">
+                        <label for="update_category" class="form-label">Category</label>
+                        <select class="form-select" id="update_category" name="category" required>
+                            <option value="" disabled>Select a category</option>
+                            <% categories.forEach((category) => { %>
+                                <option value="<%= category.id %>"><%= category.category_name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_item_name" class="form-label">Item Name</label>
+                        <input type="text" class="form-control" id="update_item_name" name="item_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_serial_name" class="form-label">Serial Number</label>
+                        <input type="text" class="form-control" id="update_serial_name" name="serial_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_model" class="form-label">Model</label>
+                        <input type="text" class="form-control" id="update_model" name="model" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_brand" class="form-label">Brand</label>
+                        <input type="text" class="form-control" id="update_brand" name="brand" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_amount" class="form-label">Amount</label>
+                        <input type="number" class="form-control" id="update_amount" name="amount" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_purchase_date" class="form-label">Purchase Date</label>
+                        <input type="date" class="form-control" id="update_purchase_date" name="purchase_date" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="updateEquipmentForm" class="btn btn-success">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Populate the Update Modal with existing data
+    document.querySelectorAll('.update-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            document.getElementById('updateEquipmentForm').action = `/inventory/update/${id}`;
+            document.getElementById('update_category').value = this.getAttribute('data-category');
+            document.getElementById('update_item_name').value = this.getAttribute('data-name');
+            document.getElementById('update_serial_name').value = this.getAttribute('data-serial');
+            document.getElementById('update_model').value = this.getAttribute('data-model');
+            document.getElementById('update_brand').value = this.getAttribute('data-brand');
+            document.getElementById('update_amount').value = this.getAttribute('data-amount');
+            document.getElementById('update_purchase_date').value = this.getAttribute('data-date');
+        });
+    });
+
+    // Handle Delete Action
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            if (confirm('Are you sure you want to delete this item?')) {
+                fetch(`/inventory/delete/${id}`, {
+                    method: 'DELETE',
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Failed to delete item');
+                    }
+                });
+            }
+        });
+    });
+
+
+    function filterTableByCategory(category) {
+    const tableRows = document.querySelectorAll('table tbody tr');
+    
+    tableRows.forEach(row => {
+        const categoryCell = row.querySelector('td:nth-child(8)'); // Adjust index based on your category column
+        if (category === 'all') {
+            row.style.display = '';
+        } else {
+            if (categoryCell && categoryCell.textContent.trim() === category) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    });
+}
+
+// Add event listeners to category links
+document.addEventListener('DOMContentLoaded', function() {
+    const categoryLinks = document.querySelectorAll('.category-filter');
+    
+    categoryLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all links
+            categoryLinks.forEach(l => l.classList.remove('active'));
+            
+            // Add active class to clicked link
+            this.classList.add('active');
+            
+            // Get category name and filter table
+            const category = this.getAttribute('data-category');
+            filterTableByCategory(category);
+        });
+    });
+});
+
+// Add a "Show All" link at the top of the category list
+const categoryList = document.getElementById('categoryList');
+if (categoryList) {
+    const showAllLink = document.createElement('a');
+    showAllLink.className = 'nav-link category-filter';
+    showAllLink.href = '#';
+    showAllLink.innerHTML = '<i class="fa-solid fa-tag me-2"></i>Show All';
+    showAllLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        filterTableByCategory('all');
+        
+        // Remove active class from all links
+        document.querySelectorAll('.category-filter').forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+    });
+    categoryList.insertBefore(showAllLink, categoryList.firstChild);
+}
+
+
+</script>
+
+
+
+
+<%- include('includes/footer') %>
+<%- include('includes/scripts') %>

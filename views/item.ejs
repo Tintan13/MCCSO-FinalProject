@@ -1,0 +1,292 @@
+<%- include('includes/header') %>
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Items</h1>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search..." 
+                       aria-label="Search" style="border: 1px solid black; border-radius: 0.25rem;">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4" style="border: 1px solid black; border-radius: 0.25rem;">
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addItemModal">Add New Item</a>
+                        </div>
+                    </div>
+                    <div class="table-responsive" style="border: 1px solid black; border-radius: 0.25rem;">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr class="text-center">
+                                    <th>Category</th>
+                                    <th>Item Name</th>
+                                    <th>Product No.</th> 
+                                    <th>Serial No.</th>
+                                    <th>Model</th>
+                                    <th>Brand</th>
+                                    <th>Amount</th>
+                                    <th>Personnel</th>
+                                    <th>Office</th>
+                                    <th>Request Date</th>
+                                    <th>Condition</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="department-1">
+                                    <td>Department 1</td>
+                                    <td>Department 1</td>
+                                    <td>Department 1</td>
+                                    <td>Department 1</td>
+                                    <td>Department 1</td>
+                                    <td>Department 1</td>
+                                    <td>Department 1</td>
+                                    <td>Department 1</td>
+                                    <td>Department 1</td>
+                                    <td>Department 1</td>
+                                    <td>Department 1</td>
+                                    <td class="text-center">
+                                        <button class="btn btn-success btn-sm update-btn" 
+                                                data-id="1"
+                                                data-name="Department 1"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#updateItemModal">
+                                            Update
+                                        </button>
+                                        <button class="btn btn-danger btn-sm delete-btn" 
+                                                data-id="1">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Pagination in table -->
+                        <div class="row">
+                            <div class="col-12">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-center">
+                                        <!-- Previous button -->
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                                Previous
+                                            </a>
+                                        </li>
+
+                                        <!-- Page numbers -->
+                                        <li class="page-item active">
+                                            <a class="page-link" href="#">1</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="#">2</a>
+                                        </li>
+
+                                        <!-- Next button -->
+                                        <li class="page-item">
+                                            <a class="page-link" href="#">
+                                                Next
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+
+                                <!-- Records info -->
+                                <div class="text-center mt-2">
+                                    <small class="text-muted">
+                                        Showing 1 to 10 of 20 records
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Item Modal -->
+<div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addItemModalLabel">Add New Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addItemForm">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-select" id="category" name="category" required>
+                                <option value="" disabled selected>Select a category</option>
+                                <option value="category1">Category 1</option>
+                                <option value="category2">Category 2</option>
+                                <option value="category3">Category 3</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="item_name" class="form-label">Item Name</label>
+                            <input type="text" class="form-control" id="item_name" name="item_name" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="product_number" class="form-label">Product Number</label>
+                            <input type="text" class="form-control" id="product_number" name="product_number" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="serial_name" class="form-label">Serial Number</label>
+                            <input type="text" class="form-control" id="serial_name" name="serial_name" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="model" class="form-label">Model</label>
+                            <input type="text" class="form-control" id="model" name="model" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="brand" class="form-label">Brand</label>
+                            <input type="text" class="form-control" id="brand" name="brand" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="text" class="form-control" id="amount" name="amount" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="personnel" class="form-label">Personnel</label>
+                            <select class="form-select" id="personnel" name="personnel" required>
+                                <option value="" disabled selected>Select a personnel</option>
+                                <option value="personnel1">Personnel 1</option>
+                                <option value="personnel2">Personnel 2</option>
+                                <option value="personnel3">Personnel 3</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="department" class="form-label">Department</label>
+                            <input type="text" class="form-control" id="department" name="department" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="request_date" class="form-label">Request Date</label>
+                            <input type="date" class="form-control" id="request_date" name="request_date" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="condition" class="form-label">Condition</label>
+                            <select class="form-select" id="condition" name="condition" required>
+                                <option value="" disabled selected>Select a condition</option>
+                                <option value="condition1">Working</option>
+                                <option value="condition2">Broken</option>
+                                <option value="condition3">Condemned</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="saveItemBtn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Update Modal -->
+<div class="modal fade" id="updateItemModal" tabindex="-1" aria-labelledby="updateItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateItemModalLabel">Update New Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateItemForm">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-select" id="category" name="category" required>
+                                <option value="" disabled selected>Select a category</option>
+                                <option value="category1">Category 1</option>
+                                <option value="category2">Category 2</option>
+                                <option value="category3">Category 3</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="item_name" class="form-label">Item Name</label>
+                            <input type="text" class="form-control" id="item_name" name="item_name" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="product_number" class="form-label">Product Number</label>
+                            <input type="text" class="form-control" id="product_number" name="product_number" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="serial_name" class="form-label">Serial Number</label>
+                            <input type="text" class="form-control" id="serial_name" name="serial_name" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="model" class="form-label">Model</label>
+                            <input type="text" class="form-control" id="model" name="model" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="brand" class="form-label">Brand</label>
+                            <input type="text" class="form-control" id="brand" name="brand" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="text" class="form-control" id="amount" name="amount" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="personnel" class="form-label">Personnel</label>
+                            <select class="form-select" id="personnel" name="personnel" required>
+                                <option value="" disabled selected>Select a personnel</option>
+                                <option value="personnel1">Personnel 1</option>
+                                <option value="personnel2">Personnel 2</option>
+                                <option value="personnel3">Personnel 3</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="department" class="form-label">Department</label>
+                            <input type="text" class="form-control" id="department" name="department" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="request_date" class="form-label">Request Date</label>
+                            <input type="date" class="form-control" id="request_date" name="request_date" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="condition" class="form-label">Condition</label>
+                            <select class="form-select" id="condition" name="condition" required>
+                                <option value="" disabled selected>Select a condition</option>
+                                <option value="condition1">Working</option>
+                                <option value="condition2">Broken</option>
+                                <option value="condition3">Condemned</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="saveItemBtn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<%- include('includes/footer') %>
+<%- include('includes/scripts') %>

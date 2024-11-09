@@ -1,0 +1,38 @@
+<%- include('../includes/header') %>
+<%- include('../includes/sidebar') %>
+
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Categories</h1>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i>
+                    Categories List
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Category Name</th>
+                                <th>Created At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% categories.forEach(function(category) { %>
+                                <tr>
+                                    <td><%= category.id %></td>
+                                    <td><%= category.category_name %></td>
+                                    <td><%= category.created_at %></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<%- include('../includes/footer') %>
