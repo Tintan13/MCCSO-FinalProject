@@ -1,25 +1,112 @@
 <%- include('includes/header') %>
 
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Dashboard</h1>
-    <div class="row">
-        <div class="col-xl-6 col-md-12">
-            <div class="card bg-success text-white mb-4" style="border: 2px solid black;">
-                <div class="card-body text-center"> <!-- Center align card body -->
-                    <h5>Total Number of Personnel</h5>
+<div class="container mx-auto px-4 py-8 bg-gray-50 min-h-screen">
+    <div class="flex items-center justify-between mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Dashboard Overview</h1>
+        <div class="flex space-x-4">
+            <button class="flex items-center px-4 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Refresh
+            </button>
+            <button class="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow-sm hover:bg-green-700 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Add New
+            </button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Personnel Card -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="bg-green-100 rounded-full p-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                    </div>
+                    <div class="flex flex-col items-end">
+                        <span class="text-4xl font-bold text-gray-800"><%= counts.personnelCount %></span>
+                        <span class="text-sm text-gray-500">Total Personnel</span>
+                    </div>
                 </div>
-                <div class="card-footer d-flex align-items-center justify-content-center">
-                    <span class="font-weight-bold display-1"><%= counts.personnelCount %></span>
+                <div class="mt-4 flex justify-between items-center">
+                    <span class="text-green-600 text-sm font-medium">View Details</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
                 </div>
             </div>
         </div>
-        <div class="col-xl-6 col-md-12">
-            <div class="card bg-success text-white mb-4" style="border: 2px solid black;">
-                <div class="card-body text-center"> <!-- Center align card body -->
-                    <h5>Total Number of Departments</h5>
+
+        <!-- Departments Card -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="bg-blue-100 rounded-full p-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                    </div>
+                    <div class="flex flex-col items-end">
+                        <span class="text-4xl font-bold text-gray-800"><%= counts.departmentCount %></span>
+                        <span class="text-sm text-gray-500">Departments</span>
+                    </div>
                 </div>
-                <div class="card-footer d-flex align-items-center justify-content-center"> <!-- Center the footer content -->
-                    <span class="font-weight-bold display-1"><%= counts.departmentCount %></span>
+                <div class="mt-4 flex justify-between items-center">
+                    <span class="text-blue-600 text-sm font-medium">View Details</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Stats Cards -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="bg-purple-100 rounded-full p-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <div class="flex flex-col items-end">
+                        <span class="text-4xl font-bold text-gray-800">87%</span>
+                        <span class="text-sm text-gray-500">Attendance Rate</span>
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-between items-center">
+                    <span class="text-purple-600 text-sm font-medium">View Details</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="bg-orange-100 rounded-full p-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="flex flex-col items-end">
+                        <span class="text-4xl font-bold text-gray-800">24</span>
+                        <span class="text-sm text-gray-500">Pending Tasks</span>
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-between items-center">
+                    <span class="text-orange-600 text-sm font-medium">View Details</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
                 </div>
             </div>
         </div>
@@ -28,4 +115,3 @@
 
 <%- include('includes/footer') %>
 <%- include('includes/scripts') %>
-

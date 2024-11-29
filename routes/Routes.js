@@ -7,11 +7,17 @@ const departmentController = require('../controllers/department_controller');
 const personnelController = require('../controllers/personnel_controller');
 const dashboardController = require('../controllers/dashboard_controller');
 const categoryController = require('../controllers/category_controller');
-const inventoryController = require('../controllers/controller_inventory');
+const inventoryController = require('../controllers/inventoryController');
+const itemController = require('../controllers/item_controller');
+
 
 // Public routes (no authentication needed)
 router.get('/', (req, res) => {
     res.redirect('/login');
+});
+
+router.get('/item', (req, res) => {
+    res.render('item', { title: 'Item Details' });
 });
 
 router.get('/login', (req, res) => {
@@ -34,7 +40,7 @@ router.post('/login', Controllers.login);
 router.post('/register', Controllers.register);
 router.get('/logout', Controllers.logout);
 
-// Protected routes
+// Protected routes (authentication required)
 router.use(Controllers.isAuthenticated); // Apply middleware to all routes below
 
 // Dashboard route
@@ -56,21 +62,22 @@ router.delete('/personnel/delete/:id', personnelController.deletePersonnel);
 router.get('/category/list', categoryController.getCategories);
 router.post('/category/add', categoryController.addCategory);
 
-// Inventory Routes
-router.get('/inventory', inventoryController.getInventory); // Display all items
-router.get('/inventory/:id', inventoryController.getInventoryById); // Get single item
-router.post('/inventory/add', inventoryController.addInventoryItem); // Add item
+// Inventory routes
+router.get('/inventory', inventoryController.getInventory);
+router.get('/inventory/:id', inventoryController.getInventoryById);
+router.post('/inventory/add', inventoryController.addInventoryItem);
 router.post('/inventory/update/:id', inventoryController.updateInventory);
 router.delete('/inventory/delete/:id', inventoryController.deleteInventory);
 
-// Item routes
-router.get('/item', (req, res) => {
-    res.render('item', {});
-});
+// Search Items
+// router.get('/item/search', itemController.searchItems); // Search items*/
 
-// Office equipment routes
-router.get('/inventory', (req, res) => {
-    res.render('inventory', {});
-});
+router.get('/items', itemController.getItems);
+router.get('/items/api/search', itemController.searchItems);
+router.get('/items/get/:id', itemController.getItemById);
+router.post('/items/add', itemController.addItem);
+router.put('/items/update/:id', itemController.updateItem);
+router.delete('/items/delete/:id', itemController.deleteItem);
+
 
 module.exports = router;

@@ -1,71 +1,145 @@
-<div id="layoutSidenav_nav">
-    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-        <div class="sb-sidenav-menu">
-            <div class="nav">
-                <a class="nav-link" href="/index">
-                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                    Dashboard
+<div class="w-64 min-h-screen bg-gray-800 transition-all duration-300" id="layoutSidenav_nav">
+    <nav class="flex flex-col h-full">
+        <div class="flex-1">
+            <div class="py-4">
+                <!-- Dashboard -->
+                <a href="/index" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
+                    <div class="w-6 mr-3">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <span>Dashboard</span>
                 </a>
-                <a class="nav-link" href="/personnel">
-                    <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
-                    Personnel
+
+                <!-- Personnel -->
+                <a href="/personnel" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
+                    <div class="w-6 mr-3">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <span>Personnel</span>
                 </a>
-                <a class="nav-link" href="/item">
-                    <div class="sb-nav-link-icon"><i class="fa-solid fa-list"></i></div>
-                    Items
+
+                <!-- Items -->
+                <a href="/item" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
+                    <div class="w-6 mr-3">
+                        <i class="fa-solid fa-list"></i>
+                    </div>
+                    <span>Items</span>
                 </a>
-                <a class="nav-link" href="/department">
-                    <div class="sb-nav-link-icon"><i class="fa-solid fa-building"></i></div>
-                    Department
+
+                <!-- Department -->
+                <a href="/department" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
+                    <div class="w-6 mr-3">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                    <span>Department</span>
                 </a>
-                <a class="nav-link" href="/inventory">
-                    <div class="sb-nav-link-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
-                    Inventory
+
+                <!-- Inventory -->
+                <a href="/inventory" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
+                    <div class="w-6 mr-3">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </div>
+                    <span>Inventory</span>
                 </a>
-                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCategories">
-                    <div class="sb-nav-link-icon"><i class="fa-solid fa-tags"></i></div>
-                    Categories
-                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                </a>
-                <div class="collapse" id="collapseCategories">
-                    <nav class="sb-sidenav-menu-nested">
+
+                <!-- Categories Dropdown -->
+                <div x-data="{ open: false }" class="relative">
+                    <button @click="open = !open" 
+                            class="w-full flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
+                        <div class="w-6 mr-3">
+                            <i class="fa-solid fa-tags"></i>
+                        </div>
+                        <span>Categories</span>
+                        <div class="ml-auto">
+                            <i class="fas fa-angle-down transition-transform duration-200"
+                               :class="{ 'transform rotate-180': open }"></i>
+                        </div>
+                    </button>
+
+                    <!-- Categories List -->
+                    <div x-show="open" 
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 transform scale-95"
+                         x-transition:enter-end="opacity-100 transform scale-100"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 transform scale-100"
+                         x-transition:leave-end="opacity-0 transform scale-95"
+                         class="pl-8">
                         
-                        <!-- Categories will be dynamically inserted here -->
-                        <div id="categoryList">
+                        <!-- Add Category Button -->
+                        <button @click="$dispatch('open-modal')" 
+                                class="w-full flex items-center px-6 py-2 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
+                            <i class="fa-solid fa-plus mr-2"></i>
+                            <span>Add Category</span>
+                        </button>
+
+                        <!-- Dynamic Category List -->
+                        <div id="categoryList" class="space-y-1">
                             <% if (typeof categories !== 'undefined') { %>
                                 <% categories.forEach(function(category) { %>
-                                    <a class="nav-link category-filter" href="#" data-category="<%= category.category_name %>">
-                                        <i class="fa-solid fa-tag me-2"></i>
-                                        <%= category.category_name %>
+                                    <a href="#" 
+                                       class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200 category-filter" 
+                                       data-category="<%= category.category_name %>">
+                                        <i class="fa-solid fa-tag mr-2"></i>
+                                        <span><%= category.category_name %></span>
                                     </a>
                                 <% }); %>
                             <% } %>
                         </div>
-                    </nav>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 </div>
 
-
 <!-- Add Category Modal -->
-<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div x-data="{ show: false }"
+     @open-modal.window="show = true"
+     @keydown.escape.window="show = false"
+     x-show="show"
+     class="fixed inset-0 z-50 overflow-y-auto"
+     style="display: none;">
+    
+    <!-- Modal Backdrop -->
+    <div x-show="show"
+         class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+         @click="show = false"></div>
+
+    <!-- Modal Content -->
+    <div x-show="show"
+         class="relative min-h-screen flex items-center justify-center p-4">
+        <div class="relative bg-white rounded-lg max-w-md w-full p-6 shadow-xl">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Add New Category</h3>
+                <button @click="show = false" class="text-gray-400 hover:text-gray-500">
+                    <span class="sr-only">Close</span>
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label for="category_name" class="form-label">Category Name</label>
-                    <input type="text" class="form-control" id="category_name">
+
+            <!-- Modal Body -->
+            <div class="space-y-4">
+                <div>
+                    <label for="category_name" class="block text-sm font-medium text-gray-700">Category Name</label>
+                    <input type="text" 
+                           id="category_name" 
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                           placeholder="Enter category name">
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="saveCategory">Save Category</button>
+
+            <!-- Modal Footer -->
+            <div class="mt-6 flex justify-end space-x-3">
+                <button @click="show = false"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    Cancel
+                </button>
+                <button id="saveCategory"
+                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Save Category
+                </button>
             </div>
         </div>
     </div>

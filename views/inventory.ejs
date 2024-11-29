@@ -1,256 +1,264 @@
 <%- include('includes/header') %>
 
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Inventory</h1>
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search..." 
-                       aria-label="Search" style="border: 1px solid black; border-radius: 0.25rem;">
-            </div>
-        </div>
+<div class="container mx-auto px-4 py-6">
+    <h1 class="text-2xl font-bold mb-4">Inventory</h1>
+
+    <div class="mb-4">
+        <input type="text" id="searchInput" placeholder="Search..." 
+               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
     </div>
-    <div class="row">
-        <div class="col-12">
-            <div class="card mb-4" style="border: 1px solid black; border-radius: 0.25rem;">
-                <div class="card-body">
-                    <div class="row mb-3 align-items-center">
-                        <div class="col-3">
-                            <a href="#" class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#addEquipmentModal">Add New Equipment</a>
-                        </div>
-                        <div class="col-3">
-                            <a href="#" class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</a>
-                        </div>
-                        <div class="col-3">
-                            <select class="form-select" aria-label="Sort By" id="sortBySelect">
-                                <option selected disabled>Sort By</option>
-                                <option value="name">Name</option>
-                                <option value="date">Date Added</option>
-                                <option value="category">Category</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="table-responsive" style="border: 1px solid black; border-radius: 0.25rem;">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Serial No.</th>
-                                    <th>Model</th>
-                                    <th>Brand</th>
-                                    <th>Amount</th>
-                                    <th>Purchase Date</th>
-                                    <th>Category</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% inventory.forEach((item) => { %>
-                                    <tr>
-                                        <td><%= item.id %></td>
-                                        <td><%= item.name %></td>
-                                        <td><%= item.serial_no %></td>
-                                        <td><%= item.model %></td>
-                                        <td><%= item.brand %></td>
-                                        <td><%= item.amount %></td>
-                                        <td><%= item.purchase_date %></td>
-                                        <td><%= item.category_name %></td>
-                                        <td class="text-center">
-                                            <button class="btn btn-success btn-sm update-btn" 
-                                                    data-bs-toggle="modal" 
-                                                    data-bs-target="#updateEquipmentModal" 
-                                                    data-id="<%= item.id %>"
-                                                    data-name="<%= item.name %>"
-                                                    data-serial="<%= item.serial_no %>"
-                                                    data-model="<%= item.model %>"
-                                                    data-brand="<%= item.brand %>"
-                                                    data-amount="<%= item.amount %>"
-                                                    data-date="<%= item.purchase_date %>"
-                                                    data-category="<%= item.category_name %>">
-                                                Update
-                                            </button>
-                                            <button class="btn btn-danger btn-sm delete-btn" data-id="<%= item.id %>">Delete</button>
-                                        </td>
-                                    </tr>
-                                <% }) %>
-                            </tbody>
-                            
-                        </table>
 
-                        <!-- Pagination in table -->
-                        <div class="row">
-                            <div class="col-12">
-                                <nav aria-label="Page navigation">
-                                    <ul class="pagination justify-content-center">
-                                        <!-- Previous button -->
-                                        <li class="page-item disabled">
-                                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
-                                                Previous
-                                            </a>
-                                        </li>
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="p-4 flex space-x-4 items-center">
+            <button id="addEquipmentBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
+                Add New Equipment
+            </button>
+            <button id="addCategoryBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
+                Add Category
+            </button>
+            <select id="sortBySelect" class="border border-gray-300 rounded px-3 py-2">
+                <option disabled selected>Sort By</option>
+                <option value="name">Name</option>
+                <option value="date">Date Added</option>
+                <option value="category">Category</option>
+            </select>
+        </div>
 
-                                        <!-- Page numbers -->
-                                        <li class="page-item active">
-                                            <a class="page-link" href="#">1</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">2</a>
-                                        </li>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-4 py-2">ID</th>
+                        <th class="px-4 py-2">Name</th>
+                        <th class="px-4 py-2">Serial No.</th>
+                        <th class="px-4 py-2">Model</th>
+                        <th class="px-4 py-2">Brand</th>
+                        <th class="px-4 py-2">Amount</th>
+                        <th class="px-4 py-2">Purchase Date</th>
+                        <th class="px-4 py-2">Category</th>
+                        <th class="px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTableBody">
+                    <% inventory.forEach((item) => { %>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="px-4 py-2"><%= item.id %></td>
+                            <td class="px-4 py-2"><%= item.name %></td>
+                            <td class="px-4 py-2"><%= item.serial_no %></td>
+                            <td class="px-4 py-2"><%= item.model %></td>
+                            <td class="px-4 py-2"><%= item.brand %></td>
+                            <td class="px-4 py-2"><%= item.amount %></td>
+                            <td class="px-4 py-2"><%= item.purchase_date %></td>
+                            <td class="px-4 py-2"><%= item.category_name %></td>
+                            <td class="px-4 py-2 text-center">
+                                <button class="update-btn bg-green-500 text-white px-3 py-1 rounded mr-2 hover:bg-green-600"
+                                        data-id="<%= item.id %>"
+                                        data-name="<%= item.name %>"
+                                        data-serial="<%= item.serial_no %>"
+                                        data-model="<%= item.model %>"
+                                        data-brand="<%= item.brand %>"
+                                        data-amount="<%= item.amount %>"
+                                        data-date="<%= item.purchase_date %>"
+                                        data-category="<%= item.category_name %>">
+                                    Update
+                                </button>
+                                <button class="delete-btn bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                                        data-id="<%= item.id %>">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
 
-                                        <!-- Next button -->
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">
-                                                Next
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </nav>
-
-                                <!-- Records info -->
-                                <div class="text-center mt-2">
-                                    <small class="text-muted">
-                                        Showing 1 to 10 of 20 records
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Pagination -->
+        <div class="flex justify-center items-center p-4">
+            <nav class="flex space-x-2">
+                <button class="prev-btn px-3 py-1 border rounded disabled:opacity-50">Previous</button>
+                <span class="page-info px-3 py-1">Page 1 of 2</span>
+                <button class="next-btn px-3 py-1 border rounded">Next</button>
+            </nav>
         </div>
     </div>
 </div>
 
 <!-- Add Equipment Modal -->
-<div class="modal fade" id="addEquipmentModal" tabindex="-1" aria-labelledby="addEquipmentModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addEquipmentModalLabel">Add New Equipment</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addEquipmentForm" action="/inventory/add" method="POST">
-                    <div class="mb-3">
-                        <label for="category" class="form-label">Category</label>
-                        <select class="form-select" id="category" name="category" required>
-                            <option value="" disabled selected>Select a category</option>
-                            <% categories.forEach((category) => { %>
-                                <option value="<%= category.category_name %>">
-                                    <%= category.category_name %>
-                                </option>
-                            <% }) %>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="item_name" class="form-label">Item Name</label>
-                        <input type="text" class="form-control" id="item_name" name="item_name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="serial_name" class="form-label">Serial Number</label>
-                        <input type="text" class="form-control" id="serial_name" name="serial_name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="model" class="form-label">Model</label>
-                        <input type="text" class="form-control" id="model" name="model" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="brand" class="form-label">Brand</label>
-                        <input type="text" class="form-control" id="brand" name="brand" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="amount" class="form-label">Amount</label>
-                        <input type="number" class="form-control" id="amount" name="amount" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="purchase_date" class="form-label">Purchase Date</label>
-                        <input type="date" class="form-control" id="purchase_date" name="purchase_date" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" form="addEquipmentForm" class="btn btn-success">Save</button>
-            </div>
+<div id="addEquipmentModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-xl w-96 p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold">Add New Equipment</h2>
+            <button id="closeAddModal" class="text-gray-600 hover:text-gray-900">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
         </div>
+        <form id="addEquipmentForm" action="/inventory/add" method="POST" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <select name="category" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <option value="" disabled selected>Select a category</option>
+                    <% categories.forEach((category) => { %>
+                        <option value="<%= category.category_name %>">
+                            <%= category.category_name %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
+                <input type="text" name="item_name" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Serial Number</label>
+                <input type="text" name="serial_name" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Model</label>
+                <input type="text" name="model" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Brand</label>
+                <input type="text" name="brand" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                <input type="number" name="amount" min="0" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Purchase Date</label>
+                <input type="date" name="purchase_date" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div class="flex justify-end space-x-2 pt-4">
+                <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition">
+                    Save Equipment
+                </button>
+            </div>
+        </form>
     </div>
 </div>
-
 
 <!-- Update Equipment Modal -->
-<div class="modal fade" id="updateEquipmentModal" tabindex="-1" aria-labelledby="updateEquipmentModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateEquipmentModalLabel">Update Equipment</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="updateEquipmentForm" method="POST">
-                    <div class="mb-3">
-                        <label for="update_category" class="form-label">Category</label>
-                        <select class="form-select" id="update_category" name="category" required>
-                            <option value="" disabled>Select a category</option>
-                            <% categories.forEach((category) => { %>
-                                <option value="<%= category.id %>"><%= category.category_name %></option>
-                            <% }) %>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="update_item_name" class="form-label">Item Name</label>
-                        <input type="text" class="form-control" id="update_item_name" name="item_name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="update_serial_name" class="form-label">Serial Number</label>
-                        <input type="text" class="form-control" id="update_serial_name" name="serial_name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="update_model" class="form-label">Model</label>
-                        <input type="text" class="form-control" id="update_model" name="model" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="update_brand" class="form-label">Brand</label>
-                        <input type="text" class="form-control" id="update_brand" name="brand" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="update_amount" class="form-label">Amount</label>
-                        <input type="number" class="form-control" id="update_amount" name="amount" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="update_purchase_date" class="form-label">Purchase Date</label>
-                        <input type="date" class="form-control" id="update_purchase_date" name="purchase_date" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" form="updateEquipmentForm" class="btn btn-success">Save Changes</button>
-            </div>
+<div id="updateEquipmentModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-xl w-96 p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold">Update Equipment</h2>
+            <button id="closeUpdateModal" class="text-gray-600 hover:text-gray-900">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
         </div>
+        <form id="updateEquipmentForm" method="POST" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <select id="update_category" name="category" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <option value="" disabled>Select a category</option>
+                    <% categories.forEach((category) => { %>
+                        <option value="<%= category.id %>"><%= category.category_name %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
+                <input type="text" id="update_item_name" name="item_name" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Serial Number</label>
+                <input type="text" id="update_serial_name" name="serial_name" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Model</label>
+                <input type="text" id="update_model" name="model" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Brand</label>
+                <input type="text" id="update_brand" name="brand" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                <input type="number" id="update_amount" name="amount" min="0" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Purchase Date</label>
+                <input type="date" id="update_purchase_date" name="purchase_date" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div class="flex justify-end space-x-2 pt-4">
+                <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition">
+                    Update Equipment
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
-
 <script>
-    // Populate the Update Modal with existing data
+document.addEventListener('DOMContentLoaded', function() {
+    // Modal functionality
+    const addEquipmentBtn = document.getElementById('addEquipmentBtn');
+    const addEquipmentModal = document.getElementById('addEquipmentModal');
+    const updateEquipmentModal = document.getElementById('updateEquipmentModal');
+    const closeAddModal = document.getElementById('closeAddModal');
+    const closeUpdateModal = document.getElementById('closeUpdateModal');
+
+    // Open Add Equipment Modal
+    addEquipmentBtn.addEventListener('click', () => {
+        addEquipmentModal.classList.remove('hidden');
+    });
+
+    // Close Add Equipment Modal
+    closeAddModal.addEventListener('click', () => {
+        addEquipmentModal.classList.add('hidden');
+    });
+
+    // Close Update Equipment Modal
+    closeUpdateModal.addEventListener('click', () => {
+        updateEquipmentModal.classList.add('hidden');
+    });
+
+    // Populate and Open Update Modal
     document.querySelectorAll('.update-btn').forEach(button => {
-        button.addEventListener('click', function () {
+        button.addEventListener('click', function() {
+            const modal = updateEquipmentModal;
+            const form = modal.querySelector('form');
+            
+            // Populate form fields with data attributes
+            form.querySelector('[name="category"]').value = this.getAttribute('data-category');
+            form.querySelector('[name="item_name"]').value = this.getAttribute('data-name');
+            form.querySelector('[name="serial_name"]').value = this.getAttribute('data-serial');
+            form.querySelector('[name="model"]').value = this.getAttribute('data-model');
+            form.querySelector('[name="brand"]').value = this.getAttribute('data-brand');
+            form.querySelector('[name="amount"]').value = this.getAttribute('data-amount');
+            form.querySelector('[name="purchase_date"]').value = this.getAttribute('data-date');
+
+            // Set form action
             const id = this.getAttribute('data-id');
-            document.getElementById('updateEquipmentForm').action = `/inventory/update/${id}`;
-            document.getElementById('update_category').value = this.getAttribute('data-category');
-            document.getElementById('update_item_name').value = this.getAttribute('data-name');
-            document.getElementById('update_serial_name').value = this.getAttribute('data-serial');
-            document.getElementById('update_model').value = this.getAttribute('data-model');
-            document.getElementById('update_brand').value = this.getAttribute('data-brand');
-            document.getElementById('update_amount').value = this.getAttribute('data-amount');
-            document.getElementById('update_purchase_date').value = this.getAttribute('data-date');
+            form.action = `/inventory/update/${id}`;
+
+            // Show modal
+            modal.classList.remove('hidden');
         });
     });
 
-    // Handle Delete Action
+    // Delete functionality
     document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', function () {
+        button.addEventListener('click', function() {
             const id = this.getAttribute('data-id');
             if (confirm('Are you sure you want to delete this item?')) {
                 fetch(`/inventory/delete/${id}`, {
@@ -258,77 +266,99 @@
                 })
                 .then(response => {
                     if (response.ok) {
-                        location.reload();
+                        // Remove the row from the table
+                        this.closest('tr').remove();
                     } else {
                         alert('Failed to delete item');
                     }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the item');
                 });
             }
         });
     });
 
-
-    function filterTableByCategory(category) {
-    const tableRows = document.querySelectorAll('table tbody tr');
-    
-    tableRows.forEach(row => {
-        const categoryCell = row.querySelector('td:nth-child(8)'); // Adjust index based on your category column
-        if (category === 'all') {
-            row.style.display = '';
-        } else {
-            if (categoryCell && categoryCell.textContent.trim() === category) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        }
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#inventoryTableBody tr');
+        
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(searchTerm) ? '' : 'none';
+        });
     });
-}
 
-// Add event listeners to category links
-document.addEventListener('DOMContentLoaded', function() {
-    const categoryLinks = document.querySelectorAll('.category-filter');
-    
-    categoryLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Remove active class from all links
-            categoryLinks.forEach(l => l.classList.remove('active'));
-            
-            // Add active class to clicked link
-            this.classList.add('active');
-            
-            // Get category name and filter table
-            const category = this.getAttribute('data-category');
-            filterTableByCategory(category);
+    // Sort functionality
+    const sortBySelect = document.getElementById('sortBySelect');
+    sortBySelect.addEventListener('change', function() {
+        const sortBy = this.value;
+        const tbody = document.getElementById('inventoryTableBody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+
+        rows.sort((a, b) => {
+            const cellIndex = {
+                'name': 1,
+                'date': 6,
+                'category': 7
+            }[sortBy];
+
+            const aText = a.querySelector(`td:nth-child(${cellIndex})`).textContent;
+            const bText = b.querySelector(`td:nth-child(${cellIndex})`).textContent;
+
+            return aText.localeCompare(bText);
+        });
+
+        // Reinsert sorted rows
+        rows.forEach(row => tbody.appendChild(row));
+    });
+
+    // Form submission handlers
+    document.getElementById('addEquipmentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch('/inventory/add', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Close modal and potentially refresh or add new row
+            addEquipmentModal.classList.add('hidden');
+            location.reload(); // Simple approach, could be replaced with more dynamic update
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to add equipment');
+        });
+    });
+
+    document.getElementById('updateEquipmentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const action = this.getAttribute('action');
+
+        fetch(action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Close modal and potentially refresh or update row
+            updateEquipmentModal.classList.add('hidden');
+            location.reload(); // Simple approach, could be replaced with more dynamic update
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to update equipment');
         });
     });
 });
-
-// Add a "Show All" link at the top of the category list
-const categoryList = document.getElementById('categoryList');
-if (categoryList) {
-    const showAllLink = document.createElement('a');
-    showAllLink.className = 'nav-link category-filter';
-    showAllLink.href = '#';
-    showAllLink.innerHTML = '<i class="fa-solid fa-tag me-2"></i>Show All';
-    showAllLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        filterTableByCategory('all');
-        
-        // Remove active class from all links
-        document.querySelectorAll('.category-filter').forEach(l => l.classList.remove('active'));
-        this.classList.add('active');
-    });
-    categoryList.insertBefore(showAllLink, categoryList.firstChild);
-}
-
-
 </script>
-
-
-
 
 <%- include('includes/footer') %>
 <%- include('includes/scripts') %>

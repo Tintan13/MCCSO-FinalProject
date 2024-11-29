@@ -8,15 +8,16 @@
     <meta name="author" content="" />
     <title>MCCSO Inventory Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-    <link href="css/styles.css" rel="stylesheet" />
+    <link href="css/output.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="sb-nav-fixed">
+<body class="bg-gray-100">
     <%- include('topnavbar') %>
 
-    <div id="layoutSidenav">
+    <div class="flex">
         <%- include('sidebar') %>
 
-        <div id="layoutSidenav_content">
-            <main>
+        <div class="flex-1">
+            <main class="p-4">
