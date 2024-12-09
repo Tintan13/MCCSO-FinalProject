@@ -50,9 +50,9 @@ const inventoryController = {
         console.log('Add Item Request Body:', req.body);
     
         const {
-            category,        // Changed from category_name
-            item_name,       // Changed from name
-            serial_name,     // Changed from serial_no
+            category,        
+            item_name,      
+            serial_name,   
             model,
             brand,
             amount,
@@ -79,7 +79,7 @@ const inventoryController = {
         if (!purchase_date) missingFields.push('purchase_date');
     
         if (missingFields.length > 0) {
-            return res.status(400).send(`Missing fields: ${missingFields.join(', ')}`);
+            return res.status(400).json({ error: `Missing fields: ${missingFields.join(', ')}` });
         }
     
         db.query(
@@ -90,66 +90,77 @@ const inventoryController = {
             (insertError, result) => {
                 if (insertError) {
                     console.error('Error adding item:', insertError);
-                    return res.status(500).send('Error adding inventory item');
+                    return res.status(500).json({ error: 'Error adding inventory item' });
                 }
     
-                res.redirect('/inventory');
+                // Send JSON response instead of redirecting
+                res.status(200).json({ 
+                    message: 'Inventory item added successfully', 
+                    itemId: result.insertId 
+                });
             }
         );
     },
     
-    // Similarly, update the update method
-    updateInventory: (req, res) => {
-        const id = req.params.id;
+    // Update Inventory Item
+    updateInventoryItem: (req, res) => {
+        console.log('Update Item Request Body:', req.body);
+    
+        const { id } = req.params;
+    
+        // Validate ID
+        if (!id) {
+            return res.status(400).send('No item ID provided');
+        }
+    
         const {
-            category,        // Changed from category_name
-            item_name,       // Changed from name
-            serial_name,     // Changed from serial_no
+            category_name,
+            name,
+            serial_no,
             model,
             brand,
             amount,
             purchase_date
         } = req.body;
     
-        // Check each field individually
-        const missingFields = [];
-        if (!category) missingFields.push('category');
-        if (!item_name) missingFields.push('item_name');
-        if (!serial_name) missingFields.push('serial_name');
-        if (!model) missingFields.push('model');
-        if (!brand) missingFields.push('brand');
-        if (!amount) missingFields.push('amount');
-        if (!purchase_date) missingFields.push('purchase_date');
-    
-        if (missingFields.length > 0) {
-            return res.status(400).json({ 
-                message: `Missing fields: ${missingFields.join(', ')}`,
-                missingFields: missingFields
-            });
+        // Validate amount - ensure it's a valid integer or NULL
+        const parsedAmount = amount ? parseInt(amount, 10) : null;
+        if (amount !== null && isNaN(parsedAmount)) {
+            return res.status(400).send('Invalid amount');
         }
     
         db.query(
-            `UPDATE inventory SET 
-            category_name = ?, 
-            name = ?, 
-            serial_no = ?, 
-            model = ?, 
-            brand = ?, 
-            amount = ?, 
-            purchase_date = ? 
+            `UPDATE inventory 
+            SET 
+                category_name = ?, 
+                name = ?, 
+                serial_no = ?, 
+                model = ?, 
+                brand = ?, 
+                amount = ?, 
+                purchase_date = ? 
             WHERE id = ?`,
-            [category, item_name, serial_name, model, brand, amount, purchase_date, id],
+            [
+                category_name || null, 
+                name || null, 
+                serial_no || null, 
+                model || null, 
+                brand || null, 
+                parsedAmount, 
+                purchase_date || null, 
+                id
+            ],
             (updateError, result) => {
                 if (updateError) {
                     console.error('Error updating item:', updateError);
-                    return res.status(500).json({ success: false, message: 'Error updating inventory item' });
+                    return res.status(500).send('Error updating inventory item');
                 }
     
                 if (result.affectedRows === 0) {
-                    return res.status(404).json({ success: false, message: 'Item not found' });
+                    return res.status(404).send('Item not found');
                 }
     
-                res.json({ success: true, message: 'Item updated successfully' });
+                res.status(200).send('Item updated successfully');
             }
         );
     },

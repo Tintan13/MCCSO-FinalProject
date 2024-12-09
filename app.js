@@ -7,6 +7,7 @@ const connection = require('./config/database');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
 // Session configuration - Add this before other middleware
 app.use(session({
     secret: 'your-secret-key-here', // Change this to a secure secret key
@@ -71,3 +72,6 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));

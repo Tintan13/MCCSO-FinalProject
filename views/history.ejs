@@ -1,0 +1,52 @@
+<%- include('includes/header') %> <!-- Include the header -->
+
+<!-- history page content -->
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-white shadow-lg rounded-lg p-6">
+        <h1 class="text-3xl font-semibold text-gray-800">history</h1>
+
+        <!-- Dynamically display history -->
+        <% if (history.length > 0) { %>
+            <ul class="mt-6 space-y-4">
+                <% history.slice((currentPage - 1) * 10, currentPage * 10).forEach(function(notification) { %>
+                    <li class="flex items-center space-x-4 bg-gray-100 p-4 rounded-lg shadow hover:bg-gray-200 transition-all">
+                        <!-- Icon Section -->
+                        <div class="flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8 3.582-8 8-8zm0 2a6 6 0 110 12 6 6 0 010-12z"/>
+                            </svg>
+                        </div>
+                        
+                        <!-- Notification Content -->
+                        <div class="flex-1">
+                            <span class="font-semibold text-gray-800"><%= notification.message %></span>
+                            <p class="text-sm text-gray-600 mt-1">Updated at: <%= notification.updated_at %></p>
+                        </div>
+
+                        <!-- Optionally, you can add a close button -->
+                        <button class="text-gray-500 hover:text-gray-800 focus:outline-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </li>
+                <% }); %>
+            </ul>
+
+            <!-- Pagination -->
+            <div class="mt-6 flex justify-center space-x-2">
+                <% for (let i = 1; i <= Math.ceil(history.length / 10); i++) { %>
+                    <a href="?page=<%= i %>" 
+                       class="px-4 py-2 rounded border bg-gray-100 hover:bg-green-200 text-gray-800 <%= currentPage === i ? 'bg-green-500 text-white' : '' %>">
+                        <%= i %>
+                    </a>
+                <% } %>
+            </div>
+        <% } else { %>
+            <p class="text-gray-600 mt-4">No history found.</p>
+        <% } %>
+    </div>
+</div>
+
+<%- include('includes/footer') %> <!-- Include the footer -->
+<%- include('includes/scripts') %> <!-- Include the scripts -->

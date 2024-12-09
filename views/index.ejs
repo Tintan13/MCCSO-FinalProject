@@ -76,8 +76,8 @@
                         </svg>
                     </div>
                     <div class="flex flex-col items-end">
-                        <span class="text-4xl font-bold text-gray-800">87%</span>
-                        <span class="text-sm text-gray-500">Attendance Rate</span>
+                        <span class="text-4xl font-bold text-gray-800"><%= counts.inventoryCount %></span>
+                        <span class="text-sm text-gray-500">Inventory Total</span>
                     </div>
                 </div>
                 <div class="mt-4 flex justify-between items-center">
@@ -98,8 +98,8 @@
                         </svg>
                     </div>
                     <div class="flex flex-col items-end">
-                        <span class="text-4xl font-bold text-gray-800">24</span>
-                        <span class="text-sm text-gray-500">Pending Tasks</span>
+                        <span class="text-4xl font-bold text-gray-800"><%= counts.itemsCount %></span>
+                        <span class="text-sm text-gray-500">Total Item</span>
                     </div>
                 </div>
                 <div class="mt-4 flex justify-between items-center">
@@ -110,8 +110,68 @@
                 </div>
             </div>
         </div>
+
+
+        
+
+
+
     </div>
+    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <div class="p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Dashboard Stats</h2>
+            <canvas id="statsChart" width="400" height="150"></canvas>
+        </div>
+    </div>
+    
+
 </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+<script>
+    const ctx = document.getElementById('statsChart').getContext('2d');
+    const statsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Personnel', 'Departments', 'Inventory', 'Items'], // Labels for each bar
+            datasets: [{
+                label: 'Counts',
+                data: [
+                    <%= counts.personnelCount %>,
+                    <%= counts.departmentCount %>,
+                    <%= counts.inventoryCount %>,
+                    <%= counts.itemsCount %>
+                ],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)', // color for the Personnel bar
+                    'rgba(54, 162, 235, 0.2)', // color for the Departments bar
+                    'rgba(255, 159, 64, 0.2)', // color for the Inventory bar
+                    'rgba(153, 102, 255, 0.2)' // color for the Items bar
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)', // border color for Personnel bar
+                    'rgba(54, 162, 235, 1)', // border color for Departments bar
+                    'rgba(255, 159, 64, 1)', // border color for Inventory bar
+                    'rgba(153, 102, 255, 1)' // border color for Items bar
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
 
 <%- include('includes/footer') %>
 <%- include('includes/scripts') %>
